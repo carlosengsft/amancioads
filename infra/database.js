@@ -8,12 +8,13 @@ async function query(queryObject) {
     database: process.env.POSTGRES_DB,
     password: process.env.POSTGRES_PASSWORD,
   });
-  await client.connect();
   try {
+    await client.connect();
     const resultado = await client.query(queryObject);
     return resultado;
   } catch (error) {
-    return "Erro interno do servidor!";
+    console.error(error);
+    throw error;
   } finally {
     await client.end();
   }
