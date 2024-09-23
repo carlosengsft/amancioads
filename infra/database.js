@@ -2,16 +2,21 @@ import { Client } from "pg";
 
 async function query(queryObject) {
   const client = new Client({
-    host: "localhost",
-    port: 5432,
-    user: "postgres",
-    database: "postgres",
-    password: "postgres",
+    host: process.env.POSTGRES_HOST,
+    port: process.env.POSTGRES_PORT,
+    user: process.env.POSTGRES_USER,
+    database: process.env.POSTGRES_DB,
+    password: process.env.POSTGRES_PASSWORD,
   });
   await client.connect();
-  const resultado = await client.query(queryObject);
-  await client.end();
-  return resultado;
+  try {
+    const resultado = await client.query(queryObject);
+    return resultado;
+  } catch (error) {
+    return "Erro interno do servidor!";
+  } finally {
+    await client.end();
+  }
 }
 export default {
   query: query,
